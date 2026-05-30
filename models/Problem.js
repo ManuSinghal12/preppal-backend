@@ -6,7 +6,7 @@ const problemSchema = new mongoose.Schema({
         required: true
     },
     title: { type: String, required: [true, "Title is required"], trim: true },
-    platform: { type: String, enum: ["LeetCode", "GFG", "HackerRank", "CodeForces", "Other"], default: "Leetcode" },
+    platform: { type: String, enum: ["LeetCode", "GFG", "HackerRank", "CodeForces", "Other"], default: "LeetCode" },
     topic: {
         type: String,
         required: [true, "Topic is required"],
@@ -17,7 +17,10 @@ const problemSchema = new mongoose.Schema({
     status: { type: String, enum: ["Solved", "Stuck", "Revise", "To Do"], default: "To Do" },
     notes: { type: String, default: "" },
     dateSolved: { type: Date },
-    tags: { type: [String], default: [] }
+    isStarred: { type: Boolean, default: false },
+    tags: { type: [String], default: [] },
+    revisionCount: { type: Number, default: 0 },
+    nextRevisionDate: { type: Date, default: null }
 }, { timestamps: true })
 
 const Problem = mongoose.model("Problem", problemSchema)
