@@ -23,6 +23,7 @@ const PORT = process.env.PORT || 5050
 const { errorHandler } = require("./middleware/errorMiddleware")
 
 app.use("/api/auth", require("./routes/authRoutes"))
+app.use("/api/problems", require("./routes/problemRoutes"))
 app.use(errorHandler)
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`))
