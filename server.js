@@ -28,6 +28,7 @@ const { errorHandler } = require("./middleware/errorMiddleware")
 app.use("/api/auth", require("./routes/authRoutes"))
 app.use("/api/problems", require("./routes/problemRoutes"))
 app.use("/api/notes", require("./routes/noteRoutes"))
+app.use("/api/ai", require("./routes/aiRoutes"))
 app.use(errorHandler)
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`))

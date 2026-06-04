@@ -45,8 +45,16 @@ const uploadNote = async (req, res, next) => {
 const getAllNotes = async (req, res, next) => {
     try {
 
-        const notes = await Note.find({ userId: req.user._id })
-            .select("-chunks").sort({ createdAt: -1 })
+        const notes = await Note.aggregate([
+            { $match: { userId: req.user._id } },
+            {
+                $addFields: {
+                    chunkCount: { $size: { $ifNull: ["$chunks", []] } }
+                }
+            },
+            { $project: { chunks: 0 } },
+            { $sort: { createdAt: -1 } }
+        ])
         res.json(notes)
     } catch (error) { next(error) }
 }
