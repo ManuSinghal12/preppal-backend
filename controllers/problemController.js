@@ -1,6 +1,16 @@
 const Problem = require("../models/Problem")
 const { getNextRevisionDate } = require("../utils/spacedRevision")
 
+const getRevisionFields = (status, existingProblem = null, solvedDate = null) => {
+    if (status !== "Solved") return {}
+    if (existingProblem?.nextRevisionDate) return {}
+
+    return {
+        nextRevisionDate: getNextRevisionDate(0),
+        dateSolved: solvedDate || existingProblem?.dateSolved || new Date()
+    }
+}
+
 //GET /api/problems - supports ?topic=&difficulty=&status=&platform=&search=
 const getAll = async (req, res, next) => {
     try {
@@ -26,7 +36,15 @@ const create = async (req, res, next) => {
         }
         const problem = await Problem.create({
             userId: req.user._id,
-            title, platform, topic, difficulty, status, notes, dateSolved, tags
+            title,
+            platform,
+            topic,
+            difficulty,
+            status,
+            notes,
+            dateSolved,
+            tags,
+            ...getRevisionFields(status, null, dateSolved)
         })
         res.status(201).json(problem)
     } catch (error) { next(error) }
@@ -41,8 +59,12 @@ const update = async (req, res, next) => {
         if (problem.userId.toString() !== req.user._id.toString()) {
             res.status(403); throw new Error("Not authorised to edit this problem")
         }
+        const updateData = {
+            ...req.body,
+            ...getRevisionFields(req.body.status, problem, req.body.dateSolved)
+        }
         const updated = await Problem.findByIdAndUpdate(
-            req.params.id, req.body, { new: true, runValidators: true }
+            req.params.id, updateData, { new: true, runValidators: true }
         )
         res.json(updated)
     } catch (error) { next(error) }
@@ -93,6 +115,9 @@ const markRevised = async (req, res, next) => {
     try {
         const problem = await Problem.findById(req.params.id)
         if (!problem) { res.status(404); throw new Error("Problem not found") }
+        if (problem.userId.toString() !== req.user._id.toString()) {
+            res.status(403); throw new Error("Not authorised to update this problem")
+        }
         const nextDate = getNextRevisionDate(problem.revisionCount)
         const updated = await Problem.findByIdAndUpdate(
             req.params.id,

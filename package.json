@@ -14,6 +14,7 @@
   "dependencies": {
     "@langchain/core": "^1.1.48",
     "@langchain/groq": "^1.2.1",
+    "@langchain/textsplitters": "^1.0.1",
     "bcryptjs": "^3.0.3",
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",
