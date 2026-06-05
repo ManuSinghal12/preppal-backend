@@ -15,10 +15,16 @@ const retrieveChunks = (question, chunks, topN = 3) => {
         }
     })
 
-    return scored
+    const matchingChunks = scored
         .sort((a, b) => b.score - a.score)
         .slice(0, topN)
         .filter(c => c.score > 0)
+
+    if (matchingChunks.length > 0) return matchingChunks
+
+    return scored
+        .filter(c => c.text.trim())
+        .slice(0, topN)
 }
 
 module.exports = { retrieveChunks }
