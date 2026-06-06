@@ -3,6 +3,7 @@ const { ChatPromptTemplate } = require("@langchain/core/prompts")
 const Note = require("../models/Note")
 const { retrieveChunks } = require("../utils/retrieveChunks")
 const Problem = require("../models/Problem")
+const User = require("../models/User")
 
 const getModel = () => {
     if (!process.env.GROQ_API_KEY) {
@@ -91,6 +92,7 @@ const explainConcept = async (req, res, next) => {
 const getPrepSummary = async (req, res, next) => {
     try {
         const problems = await Problem.find({ userId: req.user._id })
+        const user = await User.findById(req.user._id)
         const weakMap = problems.reduce((acc, p) => {
             if (p.status === "Stuck" || p.status === "Revise")
                 acc[p.topic] = (acc[p.topic] || 0) + 1
@@ -102,12 +104,16 @@ const getPrepSummary = async (req, res, next) => {
             solved: problems.filter(p => p.status === "Solved").length,
             weakTopics: Object.entries(weakMap).filter(([, n]) => n >= 2).map(([t]) => t),
             backlog: problems.filter(p => p.nextRevisionDate && new Date(p.nextRevisionDate) <= today).length,
+            targetCompanies: user?.targetCompanies || [],
             topics: problems.reduce((acc, p) => { acc[p.topic] = (acc[p.topic] || 0) + 1; return acc }, {})
         }
         const result = await ChatPromptTemplate.fromMessages([
             ["system", "You are a placement prep coach. Be honest, specific, motivating. Max 3 sentences."],
-            ["human", "My DSA stats: {stats}\n\nTell me: what I am doing well, what needs urgent work, one action for today."]
-        ]).pipe(getModel()).invoke({ stats: JSON.stringify(stats) })
+            ["human", "My DSA stats (I am targeting: {companies}): {stats}\n\nTell me: what I am doing well, what needs urgent work, one action for today."]
+        ]).pipe(getModel()).invoke({
+            stats: JSON.stringify(stats),
+            companies: (user?.targetCompanies || []).join(", ")
+        })
         res.json({ summary: result.content, stats })
     } catch (error) { next(error) }
 }

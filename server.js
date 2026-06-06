@@ -7,7 +7,14 @@ connectDB()
 
 const app = express()
 
-app.use(cors())
+const corsOptions = {
+    origin: [
+        "http://localhost:5173",
+        process.env.FRONTEND_URL
+    ],
+    credentials: true
+}
+app.use(cors(corsOptions))
 app.use(express.json())
 
 app.get("/", (req, res) => {
