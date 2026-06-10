@@ -14,13 +14,25 @@ const getRevisionFields = (status, existingProblem = null, solvedDate = null) =>
 //GET /api/problems - supports ?topic=&difficulty=&status=&platform=&search=
 const getAll = async (req, res, next) => {
     try {
-        const { topic, difficulty, status, platform, search } = req.query
-        const query = { userId: req.user._id }     // always scope to logged-in user
-        if (topic) query.topic = topic
-        if (difficulty) query.difficulty = difficulty
-        if (status) query.status = status
-        if (platform) query.platform = platform
-        if (search) query.title = { $regex: search, $options: "i" }
+        const { topic, difficulty, status, platform, search } = req.query;
+        const query = { userId: req.user._id };
+
+        if (topic && topic !== "All") query.topic = { $regex: topic, $options: "i" };
+        if (difficulty && difficulty !== "All") query.difficulty = { $regex: difficulty, $options: "i" };
+        if (status && status !== "All") query.status = { $regex: status, $options: "i" };
+        if (platform && platform !== "All") query.platform = { $regex: platform, $options: "i" };
+
+        if (search) {
+            const regex = { $regex: search, $options: "i" };
+            query.$or = [
+                { title: regex },
+                { topic: regex },
+                { platform: regex },
+                { tags: regex },
+                { notes: regex }
+            ];
+        }
+
         const problems = await Problem.find(query).sort({ createdAt: -1 })
         res.json(problems)
     } catch (error) { next(error) }
@@ -55,7 +67,7 @@ const update = async (req, res, next) => {
     try {
         const problem = await Problem.findById(req.params.id)
         if (!problem) { res.status(404); throw new Error("Problem not found") }
-        // ownership check — compare as strings because MongoDB ObjectId !== plain string
+
         if (problem.userId.toString() !== req.user._id.toString()) {
             res.status(403); throw new Error("Not authorised to edit this problem")
         }
@@ -104,7 +116,7 @@ const getReviseToday = async (req, res, next) => {
         today.setHours(23, 59, 59, 999)
         const problems = await Problem.find({
             userId: req.user._id,
-            nextRevisionDate: { $ne: null, $lte: today }  // not null AND due today or earlier
+            nextRevisionDate: { $ne: null, $lte: today }
         })
         res.json(problems)
     } catch (error) { next(error) }

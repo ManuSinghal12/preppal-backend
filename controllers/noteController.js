@@ -1,6 +1,6 @@
 const fs = require("fs")
 const path = require("path")
-const { PDFParse } = require("pdf-parse")
+const pdf = require("pdf-parse")
 const Note = require("../models/Note")
 const { chunkText } = require("../utils/chunkText")
 
@@ -15,8 +15,7 @@ const uploadNote = async (req, res, next) => {
         let rawText = ""
         if (ext === ".pdf") {
             const buffer = fs.readFileSync(req.file.path)
-            const parser = new PDFParse({ data: buffer })
-            const data = await parser.getText()
+            const data = await pdf(buffer)
             rawText = data.text
         } else {
             rawText = fs.readFileSync(req.file.path, "utf-8")
@@ -28,13 +27,13 @@ const uploadNote = async (req, res, next) => {
         const tagsArr = tags ? tags.split(",").map(t => t.trim()).filter(Boolean) : []
         const note = await Note.create({
             userId: req.user._id, title, subject,
-            tags: tagsArr, originalFileName: req.file.originalname, chunks
+            tags: tagsArr, originalFileName: req.file.originalname, chunks,
+            filePath: `uploads/${req.file.filename}`
         })
-        fs.unlinkSync(req.file.path)
         res.status(201).json({
             _id: note._id, title: note.title, subject: note.subject,
             tags: note.tags, originalFileName: note.originalFileName,
-            chunkCount: note.chunks.length, createdAt: note.createdAt
+            filePath: note.filePath, chunkCount: note.chunks.length, createdAt: note.createdAt
         })
     } catch (error) {
         if (req.file && fs.existsSync(req.file.path)) fs.unlinkSync(req.file.path)

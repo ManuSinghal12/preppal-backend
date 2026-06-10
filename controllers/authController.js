@@ -8,7 +8,7 @@ const generateToken = (id) => {
 }
 const signup = async (req, res, next) => {
     try {
-        const { name, email, password, role } = req.body
+        const { name, email, password, role, branch, targetCompanies, goals } = req.body
         if (!name || !email || !password) {
             res.status(400)
             throw new Error("Please fill all required fields")
@@ -21,12 +21,23 @@ const signup = async (req, res, next) => {
         }
         const salt = await bcrypt.genSalt(10)
         const hashedPassword = await bcrypt.hash(password, salt)
-        const user = await User.create({ name, email, password: hashedPassword, role })
+        const user = await User.create({
+            name,
+            email,
+            password: hashedPassword,
+            role,
+            branch,
+            targetCompanies,
+            goals
+        })
         res.status(201).json({
             _id: user._id,
             name: user.name,
             email: user.email,
             role: user.role,
+            branch: user.branch,
+            targetCompanies: user.targetCompanies,
+            goals: user.goals,
             token: generateToken(user._id)
         })
 
@@ -48,6 +59,9 @@ const login = async (req, res, next) => {
             name: user.name,
             email: user.email,
             role: user.role,
+            branch: user.branch,
+            targetCompanies: user.targetCompanies,
+            goals: user.goals,
             token: generateToken(user._id)
         })
 

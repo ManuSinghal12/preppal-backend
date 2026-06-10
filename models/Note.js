@@ -11,6 +11,7 @@ const noteSchema = new mongoose.Schema({
     subject: { type: String, required: [true, "Subject is required"], trim: true },
     tags: { type: [String], default: [] },
     originalFileName: { type: String },
+    filePath: { type: String },
     chunks: [chunkSchema]
 }, { timestamps: true })
 

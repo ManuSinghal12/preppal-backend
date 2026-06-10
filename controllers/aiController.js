@@ -94,7 +94,7 @@ const getPrepSummary = async (req, res, next) => {
         const problems = await Problem.find({ userId: req.user._id })
         const user = await User.findById(req.user._id)
         const weakMap = problems.reduce((acc, p) => {
-            if (p.status === "Stuck" || p.status === "Revise")
+            if (p.status === "Stuck")
                 acc[p.topic] = (acc[p.topic] || 0) + 1
             return acc
         }, {})
@@ -103,7 +103,7 @@ const getPrepSummary = async (req, res, next) => {
             total: problems.length,
             solved: problems.filter(p => p.status === "Solved").length,
             weakTopics: Object.entries(weakMap).filter(([, n]) => n >= 2).map(([t]) => t),
-            backlog: problems.filter(p => p.nextRevisionDate && new Date(p.nextRevisionDate) <= today).length,
+            backlog: problems.filter(p => p.status === "Stuck" && p.nextRevisionDate && new Date(p.nextRevisionDate) <= today).length, // Only "Stuck" problems with a past/due revision date are in backlog
             targetCompanies: user?.targetCompanies || [],
             topics: problems.reduce((acc, p) => { acc[p.topic] = (acc[p.topic] || 0) + 1; return acc }, {})
         }
