@@ -78,7 +78,7 @@ const updateProfile = async (req, res, next) => {
         const updated = await User.findByIdAndUpdate(
             req.user._id,
             { name, branch, targetCompanies, goals, role },
-            { new: true, runValidators: true }
+            { returnDocument: 'after', runValidators: true }
         ).select("-password")
         res.json(updated)
     } catch (error) { next(error) }

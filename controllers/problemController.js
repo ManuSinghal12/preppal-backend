@@ -76,7 +76,7 @@ const update = async (req, res, next) => {
             ...getRevisionFields(req.body.status, problem, req.body.dateSolved)
         }
         const updated = await Problem.findByIdAndUpdate(
-            req.params.id, updateData, { new: true, runValidators: true }
+            req.params.id, updateData, { returnDocument: "after", runValidators: true }
         )
         res.json(updated)
     } catch (error) { next(error) }
@@ -134,7 +134,7 @@ const markRevised = async (req, res, next) => {
         const updated = await Problem.findByIdAndUpdate(
             req.params.id,
             { $inc: { revisionCount: 1 }, nextRevisionDate: nextDate },
-            { new: true }
+            { returnDocument: "after" }
         )
         res.json(updated)
     } catch (error) { next(error) }
