@@ -1,7 +1,9 @@
+const mongoose = require("mongoose")
 const { ChatGroq } = require("@langchain/groq")
 const { ChatPromptTemplate } = require("@langchain/core/prompts")
 const Note = require("../models/Note")
-const { retrieveChunks } = require("../utils/retrieveChunks")
+const Chunk = require("../models/Chunk")
+const { getEmbedding } = require("../utils/getEmbedding")
 const Problem = require("../models/Problem")
 const User = require("../models/User")
 
@@ -28,10 +30,24 @@ const askNote = async (req, res, next) => {
             res.status(403); throw new Error("Not authorised")
         }
 
-        const topChunks = retrieveChunks(question, note.chunks)
+        const queryVector = await getEmbedding(question)
+
+        const topChunks = await Chunk.aggregate([
+            {
+                $vectorSearch: {
+                    index: "vector_index",
+                    path: "embedding",
+                    queryVector: queryVector,
+                    numCandidates: 100,
+                    limit: 3,
+                    filter: { noteId: new mongoose.Types.ObjectId(noteId) }
+                }
+            }
+        ])
+
         if (topChunks.length === 0) {
             return res.json({
-                answer: "I could not find relevant content in this document to answer your question.",
+                answer: "I could not find semantically relevant content in this document to answer your question.",
                 chunksUsed: []
             })
         }
@@ -103,7 +119,7 @@ const getPrepSummary = async (req, res, next) => {
             total: problems.length,
             solved: problems.filter(p => p.status === "Solved").length,
             weakTopics: Object.entries(weakMap).filter(([, n]) => n >= 2).map(([t]) => t),
-            backlog: problems.filter(p => p.status === "Stuck" && p.nextRevisionDate && new Date(p.nextRevisionDate) <= today).length, // Only "Stuck" problems with a past/due revision date are in backlog
+            backlog: problems.filter(p => p.status === "Stuck" && p.nextRevisionDate && new Date(p.nextRevisionDate) <= today).length,
             targetCompanies: user?.targetCompanies || [],
             topics: problems.reduce((acc, p) => { acc[p.topic] = (acc[p.topic] || 0) + 1; return acc }, {})
         }
@@ -132,7 +148,7 @@ const mockInterview = async (req, res, next) => {
         if (questionIndex >= 4) {
             const r = await ChatPromptTemplate.fromMessages([
                 ["system", "Give final constructive feedback after a placement mock interview."],
-                ["human", "Topic: {topic}. Final answer: {answer}\nTwo-sentence performance summary + one key improvement area."]
+                ["human", "Topic: {topic}.  {answer}\nTwo-sentence performance summary + one key improvement area."]
             ]).pipe(getModel()).invoke({ topic, answer: userAnswer })
             return res.json({ feedback: r.content, done: true })
         }
