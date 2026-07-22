@@ -25,11 +25,8 @@ const getAll = async (req, res, next) => {
         if (search) {
             const regex = { $regex: search, $options: "i" };
             query.$or = [
-                { title: regex },
-                { topic: regex },
-                { platform: regex },
-                { tags: regex },
-                { notes: regex }
+                { title: regex }
+
             ];
         }
 
