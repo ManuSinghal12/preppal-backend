@@ -29,7 +29,9 @@ const topicsMap = {
         "Set Matrix Zeroes", "Merge Intervals", "Pascal's Triangle", "Sort Colors", "Majority Element",
         "Find Duplicate Number", "Maximum Subarray", "Game of Life", "Best Time to Buy Stock",
         "Kth Largest Element", "Continuous Subarray Sum", "Longest Consecutive Sequence",
-        "Maximum Product Subarray", "Find All Duplicates in Array", "First Missing Positive", "Insert Interval"
+        "Maximum Product Subarray", "Find All Duplicates in Array", "First Missing Positive", "Insert Interval",
+        "3Sum Closest", "4Sum II", "Maximize Distance to Closest Person",
+        "Pairs of Songs With Total Durations Divisible by 60", "Subarray Sums Divisible by K"
     ],
     "Strings": [
         "Valid Anagram", "Group Anagrams", "Longest Palindromic Substring", "Valid Parentheses",
@@ -38,16 +40,19 @@ const topicsMap = {
         "Isomorphic Strings", "Wildcard Matching", "Regular Expression Matching", "Longest Common Prefix",
         "Valid Palindrome", "Reverse String", "Multiply Strings", "Word Pattern", "Restore IP Addresses",
         "Text Justification", "Simplify Path", "Longest Repeating Character Replacement", "Permutation in String",
-        "Find All Anagrams in a String"
+        "Find All Anagrams in a String", "Minimum Remove to Make Valid Parentheses", "Repeated String Match",
+        "Camelcase Matching", "Custom Sort String II", "Longest Substring with At Least K Repeating Characters"
     ],
     "Linked List": [
         "Reverse Linked List", "Merge Two Sorted Lists", "Reorder List", "Remove Nth Node From End",
         "Linked List Cycle", "Copy List with Random Pointer", "Add Two Numbers", "Merge k Sorted Lists",
         "Intersection of Two Lists", "Palindrome Linked List", "Sort List", "Flatten Multilevel Doubly List",
         "Remove Duplicates from Sorted List", "Rotate List", "Partition List", "Reverse Nodes in k-Group",
-        "Swap Nodes in Pairs", "Odd Even Linked List", "Design Linked List", "Delete Node in a Linked List"
+        "Swap Nodes in Pairs", "Odd Even Linked List", "Design Linked List", "Delete Node in a Linked List",
     ],
     "Stack-Queue": [
+        "Split Linked List in Parts", "Remove Zero Sum Consecutive Nodes",
+        "Insertion Sort List", "Design Browser History",
         "Min Stack", "Evaluate Reverse Polish Notation", "Daily Temperatures", "Car Fleet",
         "Largest Rectangle in Histogram", "Implement Queue using Stacks", "Sliding Window Maximum",
         "Decode String", "Basic Calculator", "Asteroid Collision", "Online Stock Span", "Task Scheduler Stack",
@@ -55,6 +60,8 @@ const topicsMap = {
         "Validate Stack Sequences", "Next Greater Element I", "Next Greater Element II", "132 Pattern", "Maximal Rectangle"
     ],
     "Trees": [
+        "Construct String from Binary Tree", "Maximum Binary Tree",
+        "Trim a Binary Search Tree", "Deepest Leaves Sum",
         "Invert Binary Tree", "Maximum Depth of Binary Tree", "Diameter of Binary Tree", "Balanced Binary Tree",
         "Same Tree", "Subtree of Another Tree", "Lowest Common Ancestor", "Binary Tree Level Order Traversal",
         "Validate BST", "Kth Smallest in BST", "Construct Tree from Preorder/Inorder", "Binary Tree Maximum Path Sum",
@@ -64,6 +71,8 @@ const topicsMap = {
         "All Nodes Distance K in Binary Tree", "Find Duplicate Subtrees"
     ],
     "Graphs": [
+        "Regions Cut By Slashes", "Shortest Path in Binary Matrix",
+        "Find the Town Judge", "All Paths From Source to Target",
         "Number of Islands", "Max Area of Island", "Clone Graph", "Course Schedule", "Course Schedule II",
         "Pacific Atlantic Water Flow", "Surrounded Regions", "Rotting Oranges", "Walls and Gates",
         "Graph Valid Tree", "Cheapest Flights Within K Stops", "Network Delay Time", "Alien Dictionary",
@@ -72,6 +81,8 @@ const topicsMap = {
         "Find Eventual Safe States", "Minimum Height Trees", "Keys and Rooms", "As Far from Land as Possible"
     ],
     "DP": [
+        "Knight Dialer", "Minimum Falling Path Sum",
+        "Triangle", "Ones and Zeroes",
         "Climbing Stairs", "Min Cost Climbing Stairs", "House Robber", "House Robber II",
         "Longest Palindromic Substring DP", "Coin Change", "Coin Change II", "Maximum Product Subarray DP",
         "Word Break", "Longest Increasing Subsequence", "Partition Equal Subset Sum", "Target Sum",
@@ -80,6 +91,8 @@ const topicsMap = {
         "Longest Common Subsequence", "Best Time to Buy Stock IV", "Regular Expression Matching DP"
     ],
     "Recursion": [
+        "Beautiful Arrangement", "Letter Tile Possibilities",
+        "Factor Combinations", "Non-decreasing Subsequences",
         "Subsets", "Subsets II", "Combination Sum", "Combination Sum II", "Permutations", "Permutations II",
         "Word Search", "N-Queens", "N-Queens II", "Sudoku Solver", "Palindrome Partitioning",
         "Letter Combinations of a Phone Number", "Generate Parentheses", "Restore IP Addresses", "Combinations",
@@ -93,6 +106,8 @@ const topicsMap = {
         "Minimum Number of Arrows to Burst Balloons", "H-Index"
     ],
     "Binary Search": [
+        "Find Smallest Letter Greater Than Target", "Search in a Sorted Array of Unknown Size",
+        "Online Majority Element In Subarray", "Maximum Candies Allocated to K Children",
         "Binary Search", "Search a 2D Matrix", "Search a 2D Matrix II", "Koko Eating Bananas",
         "Find Minimum in Rotated Sorted Array", "Search in Rotated Sorted Array", "Time Based Key-Value Store",
         "Median of Two Sorted Arrays", "First Bad Version", "Peak Index in Mountain Array",
@@ -101,6 +116,7 @@ const topicsMap = {
         "Find K Closest Elements", "Arranging Coins", "Square Root x"
     ],
     "Greedy": [
+        "Reduce Array Size to The Half", "Minimum Add to Make Parentheses Valid", "Advantage Shuffle",
         "Maximum Subarray Greedy", "Jump Game", "Jump Game II", "Gas Station", "Hand of Straights",
         "Merge Triplets to Form Target", "Partition Labels", "Valid Parenthesis String", "Task Scheduler Greedy",
         "Non-overlapping Intervals Greedy", "Assign Cookies", "Lemonade Change", "Queue Reconstruction by Height",
@@ -108,12 +124,18 @@ const topicsMap = {
         "Minimum Deletions to Make Character Frequencies Unique", "Maximum Units on a Truck", "Two City Scheduling"
     ],
     "Heap": [
+        "Kth Smallest Prime Fraction", "Distant Barcodes", "Maximum Average Pass Ratio",
         "Kth Largest Element in Stream", "Last Stone Weight", "K Closest Points to Origin", "Find Median from Data Stream",
         "Reorganize String", "Task Scheduler Heap", "Smallest Range Covering Elements", "Top K Frequent Words Heap",
         "Merge K Sorted Lists Heap", "Find K Pairs with Smallest Sums", "IPO", "Process Tasks Using Servers",
         "Find Building Where Alice and Bob Can Meet", "Single-Threaded CPU", "Seat Reservation Manager"
     ],
     "Other": [
+        "Bitwise ORs of Subarrays", "Convert a Number to Hexadecimal",
+        "Pancake Sorting", "Sort Array by Parity",
+        "Minimum Difference Between Highest and Lowest of K Scores", "Sort Integers by The Number of 1 Bits",
+        "Score of Parentheses", "Remove K Digits",
+        "Sum of Subarray Minimums", "Maximum Frequency Stack",
         "Single Number", "Single Number II", "Number of 1 Bits", "Counting Bits", "Reverse Bits",
         "Missing Number", "Sum of Two Integers", "Bitwise AND of Numbers Range", "Power of Two", "Power of Three",
         "Hamming Distance", "UTF-8 Validation", "Divide Two Integers", "LRU Cache Design", "LFU Cache Design",
