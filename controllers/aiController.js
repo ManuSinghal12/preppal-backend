@@ -7,6 +7,10 @@ const { getEmbedding } = require("../utils/getEmbedding")
 const Problem = require("../models/Problem")
 const User = require("../models/User")
 
+// Keep the provider/model choice in the environment so a model retirement can
+// be handled in deployment settings without another code change.
+const DEFAULT_GROQ_MODEL = "openai/gpt-oss-120b"
+
 const getModel = () => {
     if (!process.env.GROQ_API_KEY) {
         throw new Error("GROQ_API_KEY is missing in .env")
@@ -14,7 +18,7 @@ const getModel = () => {
 
     return new ChatGroq({
         apiKey: process.env.GROQ_API_KEY,
-        model: "llama-3.3-70b-versatile",
+        model: process.env.GROQ_MODEL || DEFAULT_GROQ_MODEL,
         temperature: 0.3
     })
 }
