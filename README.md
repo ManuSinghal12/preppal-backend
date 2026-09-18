@@ -4,35 +4,36 @@ The backend service for PrepPal provides RESTful endpoints for user authenticati
 
 ## Architecture Highlights
 
-- **Decoupled Document Chunks:** Uploaded PDFs are parsed and stored in a dedicated `chunks` collection rather than embedded within single documents, avoiding the MongoDB 16MB document size limit for large files.
-- **MongoDB Atlas Vector Search:** Text chunks are converted into 384-dimensional dense vector embeddings using `all-MiniLM-L6-v2` via Hugging Face and indexed natively in MongoDB Atlas using HNSW vector indexes.
-- **LLM Inference:** Integrates Groq's LPU infrastructure (Llama 3.3 70B) via LangChain.js to achieve an average sub-2-second inference latency for document Q&A and mock interview generation.
-- **Database Batch Processing:** Ingestion pipelines utilize `insertMany` bulk operations to optimize network roundtrips during document processing.
+- **Decoupled Document Chunks:** Uploaded PDFs are parsed and stored in a dedicated `chunks` collection rather than embedded within single documents.
+- **MongoDB Atlas Vector Search:** Text chunks are converted into 384-dimensional dense vector embeddings using `all-MiniLM-L6-v2` via Hugging Face.
+- **LLM Inference:** Integrates Groq's LPU infrastructure (GPT-OSS-120B) via LangChain.js for document Q&A and mock interview generation.
 
 ## Tech Stack
 
 - **Runtime & Framework:** Node.js, Express.js
-- **Database:** MongoDB Atlas (Mongoose ODM)
+- **Database:** MongoDB Atlas 
 - **Vector Search:** MongoDB Atlas Vector Search
 - **Embeddings:** Hugging Face API (`sentence-transformers/all-MiniLM-L6-v2`)
-- **LLM Provider:** Groq (Llama 3.3 70B) via LangChain.js
+- **LLM Provider:** Groq (GPT-OSS-120B) via LangChain.js
 - **Auth & Middleware:** JWT, Bcrypt.js, Multer
 - **Deployment:** Render
 
 ## Key API Endpoints
 
-### Auth (`/api/auth`)
-- `POST /api/auth/register` - Create user account
-- `POST /api/auth/login` - Authenticate & receive JWT Token
-- `GET /api/auth/me` - Fetch authenticated user profile
+### Authentication (`/api/auth`)
+- `POST /api/auth/signup` - Create account
+- `POST /api/auth/login` - Authenticate & receive JWT
+- `GET /api/auth/profile` - Fetch user profile
 
 ### DSA Tracker (`/api/problems`)
-- `GET /api/problems` - Query problems (supports search, topic, status filters)
-- `POST /api/problems` - Add a problem record
-- `PUT /api/problems/:id` - Update status, notes, or revision date
-- `DELETE /api/problems/:id` - Delete a problem record
+- `GET /api/problems` - Fetch & filter problems
+- `POST /api/problems` - Add a problem
+- `PUT /api/problems/:id` - Update a problem
+- `GET /api/problems/revise-today` - Fetch problems due for revision
+- `PUT /api/problems/:id/revise` - Mark problem as revised
 
-### RAG & Notes (`/api/notes`)
-- `POST /api/notes/upload` - Upload PDF, extract text, chunk, embed, and index
-- `GET /api/notes` - List user uploaded documents
-- `POST /api/notes/chat` - Vector similarity search & LLM response generation
+### Notes & AI (`/api/notes`, `/api/ai`)
+- `POST /api/notes/upload` - Upload, process, embed & index notes
+- `POST /api/ai/ask` - Ask questions using RAG
+- `POST /api/ai/generate-questions` - Generate practice questions
+- `POST /api/ai/mock-interview` - Run an AI mock interview
